@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pihole
+  namespace: pihole
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pihole
+  template:
+    metadata:
+      labels:
+        app: pihole
+    spec:
+      containers:
+      - name: pihole
+        image: nateinaction/pihole@sha256:2d731c55870d763fcbd73221051b0b90eabe3386be699ce4e78b854bd8e9481a
+        env:
+        - name: TZ
+          value: America/Chicago
+        - name: WEBPASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: pihole
+              key: webpassword
+        envFrom:
+        - configMapRef:
+            name: pihole
+        ports:
+        - containerPort: 80
+        - containerPort: 53
+        livenessProbe:
+          tcpSocket:
+            port: 53
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        volumeMounts:
+        - name: config
+          mountPath: "/config/"
+          readOnly: true
+      volumes:
+      - name: config
+        configMap:
+          name: pihole-config

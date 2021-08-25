@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pihole
+  namespace: pihole
+data:
+  PIHOLE_DNS_: "1.1.1.3;1.0.0.3;2606:4700:4700::1113;2606:4700:4700::1003"
+  DNSSEC: "true"
+  DNS_BOGUS_PRIV: "true"
+  DNS_FQDN_REQUIRED: "true"
+  REV_SERVER: "false"
+  TEMPERATUREUNIT: "F"
+  WEBUIBOXEDLAYOUT: "traditional"
+  QUERY_LOGGING: "true"
+  WEBTHEME: "default-dark"
+  DNSMASQ_LISTENING: "local"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pihole-config
+  namespace: pihole
+data:
+  adlists.list: |
+    https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts
+    https://www.github.developerdan.com/hosts/lists/ads-and-tracking-extended.txt
+    http://sysctl.org/cameleon/hosts
+    https://s3.amazonaws.com/lists.disconnect.me/simple_tracking.txt
+    https://s3.amazonaws.com/lists.disconnect.me/simple_ad.txt
+  allowlist_exact: |
+    files.slack.com
+    p.datadoghq.com
+    static.datadoghq.com
+    download.newrelic.com
+    fonts.gstatic.com
+  denylist_exact: |
+    min-api.cryptocompare.com
+    cashstaging.me
+
+
